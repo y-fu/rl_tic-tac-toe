@@ -1,0 +1,180 @@
+class Player(object):
+	def __init__(self, sign, game, random):
+        self.sign = sign
+		self.game = game
+		self.percentage_random = 0.2
+		
+	def get_next_step():
+	   #return the first available_place
+	   for row in range(game.board_size):
+           for col in range(game.board_size):
+		       current_cell = game.board[row,col]
+		       if current_cell == "E":
+			       return current_cell
+
+import random				   
+class Agent(Player):
+    def get_next_step():
+		#determine whether take a random step or not
+		index = random.random()
+		if index < self.percentage_random
+		    step = take_random_step()
+			return step
+		step = take_strategy_step()
+        return step
+		
+    def take_random_step():
+		available_places = get_available_spaces();
+		index = random.randint(1,len(available_places) - 1)
+	    return available_places[index]
+	
+	def take_strategy_step():
+	    temp_max = -999
+		#get max value for potential movements
+        for row in range(game.board_size):
+            for col in range(game.board_size):
+                if game.board[row,col] == "E":
+                    temp_board = game.board
+                    temp_board[row,col] = sign
+                    temp_game_state = game.get_game_state()					
+		            if (temp_game_state != "E") | (temp_game_state != "P"):
+					    if temp_game_state == self.sign:
+						    self.game.value_table[row,col] = self.game.value_table[row,col] + 1 #win the game
+						else:
+                           	self.game.value_table[row,col] = self.game.value_table[row,col] - 1	#lose the game
+                    
+                    if self.game.value_table[row,col] > temp_max:
+                        temp_max = self.game.value_table[row,col]
+        
+        #get list of steps has the max step value
+		temp_candidates = []
+        for row in range(game.board_size):
+            for col in range(game.board_size):
+                if (game.value_table[row,col] == temp_max) & game.board[row,col] == "E":
+				    temp_candidates = temp_candidates + [(row,col)]
+        					
+        if len(temp_candidates) > 1:
+		
+		#get corner ones
+		temp_corners = [e for e in game.board_corners if e in temp_candidates]
+		if len(temp_corners) >= 1:
+		    return temp_corners[random.randint(0,len(temp_corners) - 1)]
+			
+		#get a random candidate if there is no corner ones
+		return temp_candidates[random.randint(0,len(temp_candidates) - 1)]
+			
+class Human(Player):	
+    def get_next_step():
+	    #read from command input
+	    input = input("Please enter your step:") #read from command as a string
+	    input = int(x) for x in input.split(",") #parse the string to integer list
+	    input = tuple(input)                     #turn to tuple type
+        return input	
+	
+	
+class Game(object):	
+    def __init__(self, board_size=3):
+	    initialise_board()
+		initialise_value_table()
+		self.board_size = board_size
+		self.board_corners = [(0,0), (0,self.board_size - 1), (self.board_size - 1, 0), (self.board_size - 1, self.board_size - 1)]
+	
+	#return winner(X/O), even(E) or in process(P)
+    def get_game_state():
+	    #a row with the same sign
+		for row in range(self.board_size):
+			equal_row = False
+		    if self.board[row, 0] != "E":
+				equal_row = True
+			    for col in range(1,self.board_size):
+				    equal_row = equal_row & (self.board[row, 0] == self.board[row,col])
+			if equal_row:
+                return self.board[row, 0]			
+	    
+		#check there is a col has all the same sign played
+      	for col in range(self.board_size):
+            equal_col = False
+            if self.board[0,col] != "E":
+                equal_col = True
+                for row in range(self.board_size):
+                    equal_col = equal_col & (self.board[0,col] == self.board[row,col])
+            if equal_col:
+                return self.board[0,col]
+
+		#check diagonal left to right
+		equal_diag = False
+		if self.board[0,0] != "E":
+		    equal_diag = True
+		    for row in range(1, self.board_size):		
+			    equal_diag = equal_diag & (self.board[row,row] == self.board[0,0])
+		if equal_diag:
+		    return self.board[0,0]
+		
+		#check diagonal right to left
+		equal_diag = False
+		if self.board[0, self.board_size - 1] != "E":
+		    equal_diag = True
+			for row in range(1, self.board_size):
+			    equal_diag = equal_diag & (self.board[0,self.board_size - 1] == self.board[row,self.board_size - 1 - row])
+		if equal_diag:
+           return self.board[0, self.board_size - 1]
+
+        #If there is still some space available return process otherwise return even 
+        if row in range(self.board_size):
+            if col in range(self.board_size):
+                if self.board[row, col] == "E":
+                    return "P"
+        return "E"					
+		   
+	def initialise_board(self):
+	    self.board = {}
+	    for row in range(self.board_size):
+		    for col in range(self.board_size):
+			    board[row,col] = "E"
+	
+	def initialise_value_table():
+	    self.value_table = {}
+	    for row in range(self.board_size):
+		    for col in range(self.board_size):
+			    self.value_table[row,col] = 0
+    
+	def play(self, player1, player2, display=True):
+	    step_count = 1;
+		while self.get_game_state == "P":
+		    if step_count % 2:
+			    step = player1.get_next_step
+				self.board[step] = player1.sign
+			else:
+			    step = player2.get_next_step
+				self.board[step] = player2.sign
+			
+			if display:
+			    display_value_table()
+				display_board()
+
+    def display_value_board():
+        for row in range(0, self.board_size):
+		    print("\n-----------\n|")
+            for col in range(0, self.board_size):
+			    if self.board[row,col] == "E":
+				   print(" |")
+				else:
+                   print(self.board[row,col] + "|")
+        print("\n-----------")
+
+    def display_value_table():
+	    for row in range(self.board_size):
+		    print("-----------\n|")
+		    for col in range(self.board_size):
+			    print(self.value_table[row,col] + "|")
+							
+    def main():
+	    game = game()
+        player1 = Agent("X", game, 0.3)
+        player2 = Agent("O", game, 0.1)
+		
+		for iteration in  range(0,100):
+            game.play(player1, player2, True)			
+	
+    if __name__ == "__main__":
+	    sys.exit(main())
